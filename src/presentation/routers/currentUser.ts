@@ -1,9 +1,8 @@
-import express from 'express'
-import { Request, Response } from 'express'
+import express, { Request, Response } from 'express'
 
 const router = express.Router()
-router.get('/', (req: Request, res: Response):void => {
+router.get('/api/users/currentuser', (req: Request, res: Response):void => {
   res.send('this is current user route')
 })
 
-export default router
+export {router as currentUserRouter}
