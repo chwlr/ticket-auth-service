@@ -11,8 +11,8 @@ router.post('/api/users/signup', [
   body('password')
     .trim()
     .isLength({ min: 4, max: 20 })
-    .matches(/[^a-zA-Z0-9]g/)
-    .withMessage('Password must be 4+ chars long, an uppercase, and contain a number')
+    .matches(/a-zA-Z0-9/)
+    .withMessage('Password must be 4+ chars long, an uppercase, contain number and specil char')
 ], (req: Request, res: Response) => {
   const errors = validationResult(req)
   if(!errors.isEmpty()) {
