@@ -1,5 +1,5 @@
 import { UserDataSource } from "../../data/interface/data-sources/user-data-source";
-import { UserRequestModel } from "../models/user";
+import { UserRequestModel, UserResponseModel } from "../models/user";
 import { UserRepository } from "../interface/repositories/user-repository";
 
 export class UserRepositoryImpl implements UserRepository {
@@ -10,6 +10,11 @@ export class UserRepositoryImpl implements UserRepository {
 
   async createUser(user: UserRequestModel) {
     const result = await this.userDataSource.create(user)
+    return result
+  }
+
+  async getUsers(): Promise<UserResponseModel[]> {
+    const result = await this.userDataSource.getUsers()
     return result
   }
 }

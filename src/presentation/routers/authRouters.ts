@@ -1,13 +1,21 @@
 import express, { Request, Response } from 'express'
-import { body, validationResult } from 'express-validator'
-import { RequestValidationError } from '../errors/request-validation-error'
 import { CreateUserUseCase } from '../../domain/interface/use-cases/user-create-usecase'
-// import { DatabaseConnectionError } from '../errors/database-connection-error'
+import { GetUsersUseCase } from '../../domain/interface/use-cases/users-get-usecase'
 
 export default function AuthRouter(
-  createUserUseCase: CreateUserUseCase
+  createUserUseCase: CreateUserUseCase,
+  getUsersUseCase: GetUsersUseCase
 ) {
   const router = express.Router()
+
+  router.get('/api/users',async (req: Request, res: Response) => {
+    try {
+      const users = await getUsersUseCase.execute()
+      res.send({users})
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data" })
+    }
+  })
 
   router.post('/api/users/signup', async (req: Request, res: Response) => {
       try {

@@ -1,10 +1,11 @@
 import server from './server'
 import mongoose from 'mongoose'
-import AuthRouter from './presentation/routers/signUp'
+import AuthRouter from './presentation/routers/authRouters'
 import { CreateUser } from './domain/use-cases/user/create-user'
 import { UserRepositoryImpl } from './domain/repositories/user-repository'
 import { MongoDBUserDataSource } from './data/data-sources/mongodb/mongodb-data-source'
 import { NoSQLDatabaseWrapper } from './data/interface/data-sources/nosql-database-wrapper'
+import { GetUsers } from './domain/use-cases/user/get-users'
 // import {currentUserRouter} from './presentation/routers/currentUser'
 // import {signInRouter} from './presentation/routers/signIn'
 // import {signUpRouter} from './presentation/routers/signUp'
@@ -31,10 +32,14 @@ const start = async () => {
   });
   const db = client.model('auth', schema)
   const userDatabase: NoSQLDatabaseWrapper = {
-    insertOne: (doc) => db.collection.insertOne(doc)
+    insertOne: (doc) => db.collection.insertOne(doc),
+    find: (query) => db.collection.find(query).toArray()
   }
 
-  const RouteMiddleware = AuthRouter(new CreateUser(new UserRepositoryImpl(new MongoDBUserDataSource(userDatabase))))
+  const RouteMiddleware = AuthRouter(
+    new CreateUser(new UserRepositoryImpl(new MongoDBUserDataSource(userDatabase))),
+    new GetUsers(new UserRepositoryImpl(new MongoDBUserDataSource(userDatabase)))
+  )
   server.use('/', RouteMiddleware)
   server.listen(3000, () => {
     console.log('listening on port 3000')

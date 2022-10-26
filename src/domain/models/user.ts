@@ -3,7 +3,6 @@ export interface UserRequestModel {
   password: string;
 }
 
-// export interface ResponseResponseModel {
-//   id: string;
-//   name: string;
-// }
+export interface UserResponseModel {
+  email: string;
+}
