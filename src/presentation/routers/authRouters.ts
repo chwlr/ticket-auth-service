@@ -1,10 +1,12 @@
 import express, { Request, Response } from 'express'
 import { CreateUserUseCase } from '../../domain/interface/use-cases/user-create-usecase'
 import { GetUsersUseCase } from '../../domain/interface/use-cases/users-get-usecase'
+import { GetUserUseCase } from '../../domain/interface/use-cases/user-get-usecase'
 
 export default function AuthRouter(
   createUserUseCase: CreateUserUseCase,
-  getUsersUseCase: GetUsersUseCase
+  getUsersUseCase: GetUsersUseCase,
+  getUserUseCase: GetUserUseCase,
 ) {
   const router = express.Router()
 
@@ -12,6 +14,17 @@ export default function AuthRouter(
     try {
       const users = await getUsersUseCase.execute()
       res.send({users})
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data" })
+    }
+  })
+
+  router.get('/api/users/?email',async (req: Request, res: Response) => {
+    const email = req.params.email
+    console.log(email)
+    try {
+      const user = await getUserUseCase.execute(email)
+      res.send({user})
     } catch (error) {
       res.status(500).send({ message: "Error fetching data" })
     }

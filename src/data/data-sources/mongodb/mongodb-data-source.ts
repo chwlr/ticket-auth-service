@@ -17,4 +17,8 @@ export class MongoDBUserDataSource implements UserDataSource {
         email: item.email.toString()
     }));
   }
+  async getUser(email: string): Promise<UserResponseModel> {
+    const result = await this.db.findOne(email)
+    return result
+  }
 }

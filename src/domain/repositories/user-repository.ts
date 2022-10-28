@@ -17,4 +17,9 @@ export class UserRepositoryImpl implements UserRepository {
     const result = await this.userDataSource.getUsers()
     return result
   }
+
+  async getUser(email: string): Promise<UserResponseModel> {
+    const result = await this.userDataSource.getUser(email)
+    return result
+  }
 }
