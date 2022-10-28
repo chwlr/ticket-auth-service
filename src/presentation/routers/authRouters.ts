@@ -31,13 +31,20 @@ export default function AuthRouter(
   })
 
   router.post('/api/users/signup', async (req: Request, res: Response) => {
+    const user = await getUserUseCase.execute(req.body.email) 
+    if (!user) {
       try {
-          await createUserUseCase.execute(req.body)
-          res.statusCode = 201
-          res.json({ message: "Created" })
+        await createUserUseCase.execute(req.body)
+        res.statusCode = 201
+        res.json({ message: "Created" })
       } catch (err) {
           res.status(500).send({ message: "Error saving data" })
       }
+    } else {
+      res.status(400).send({ message: "Email registered" })
+    }
+
+      
   })
 
   return router
