@@ -8,7 +8,7 @@ export class UserRepositoryImpl implements UserRepository {
     this.userDataSource = userDataSource
   }
 
-  async createUser(user: UserRequestModel) {
+  async createUser(user: UserRequestModel): Promise<UserResponseModel> {
     const result = await this.userDataSource.create(user)
     return result
   }

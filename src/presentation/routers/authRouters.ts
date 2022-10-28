@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import { CreateUserUseCase } from '../../domain/interface/use-cases/user-create-usecase'
 import { GetUsersUseCase } from '../../domain/interface/use-cases/users-get-usecase'
 import { GetUserUseCase } from '../../domain/interface/use-cases/user-get-usecase'
+import { createUserToken } from '../middlewares/create-user-token'
 
 export default function AuthRouter(
   createUserUseCase: CreateUserUseCase,
@@ -34,11 +35,19 @@ export default function AuthRouter(
     const user = await getUserUseCase.execute(req.body.email) 
     if (!user) {
       try {
-        await createUserUseCase.execute(req.body)
-        res.statusCode = 201
-        res.json({ message: "Created" })
+        const user = await createUserUseCase.execute(req.body)
+        const token = createUserToken(user._id)
+        console.log(token)
+        res.status(201).json({ 
+          status: 201,
+          token,
+          data: {
+            user
+          }
+        })
       } catch (err) {
-          res.status(500).send({ message: "Error saving data" })
+          console.log(err)
+          // res.status(500).send({ message: "Error saving data" })
       }
     } else {
       res.status(400).send({ message: "Email registered" })

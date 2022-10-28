@@ -4,5 +4,6 @@ export interface UserRequestModel {
 }
 
 export interface UserResponseModel {
+  _id: string;
   email: string;
 }

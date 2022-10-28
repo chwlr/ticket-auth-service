@@ -8,12 +8,18 @@ export class MongoDBUserDataSource implements UserDataSource {
     this.db = db
   }
 
-  async create(user: UserRequestModel) {
-    await this.db.insertOne(user)
+  async create(user: UserRequestModel): Promise<UserResponseModel> {
+    const data = await this.db.insertOne(user)
+    const result = {
+      _id: data.insertedId.toString(),
+      email: user.email
+    }
+    return result
   }
   async getUsers(): Promise<UserResponseModel[]> {
     const result = await this.db.find({})
     return result.map(item => ({
+        _id: item._id,
         email: item.email.toString()
     }));
   }

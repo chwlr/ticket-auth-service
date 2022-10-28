@@ -1,4 +1,4 @@
-import { UserRequestModel } from "../../models/user";
+import { UserRequestModel, UserResponseModel } from "../../models/user";
 import { UserRepository } from "../../interface/repositories/user-repository";
 import { CreateUserUseCase } from "../../interface/use-cases/user-create-usecase";
 import bcrypt from 'bcrypt'
@@ -9,7 +9,7 @@ export class CreateUser implements CreateUserUseCase {
       this.userRepository = userRepository
   }
 
-  async execute(user: UserRequestModel) {
+  async execute(user: UserRequestModel): Promise<UserResponseModel> {
       const saltRounds = 8
        let obj = {
         email: user.email,

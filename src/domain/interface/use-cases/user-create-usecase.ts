@@ -1,5 +1,5 @@
-import { UserRequestModel } from "../../models/user";
+import { UserRequestModel, UserResponseModel } from "../../models/user";
 
 export interface CreateUserUseCase {
-  execute(user: UserRequestModel): void;
+  execute(user: UserRequestModel): Promise <UserResponseModel>;
 }
