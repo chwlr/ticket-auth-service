@@ -3,8 +3,10 @@ import { CreateUserUseCase } from '../../domain/interface/use-cases/user-create-
 import { GetUsersUseCase } from '../../domain/interface/use-cases/users-get-usecase'
 import { GetUserUseCase } from '../../domain/interface/use-cases/user-get-usecase'
 import { createUserToken } from '../middlewares/create-user-token'
+import { verifyToken } from '../middlewares/verify-token'
 
-export default function AuthRouter(
+
+export default function UserRouter(
   createUserUseCase: CreateUserUseCase,
   getUsersUseCase: GetUsersUseCase,
   getUserUseCase: GetUserUseCase,
@@ -22,7 +24,6 @@ export default function AuthRouter(
 
   router.get('/api/users/?email',async (req: Request, res: Response) => {
     const email = req.params.email
-    console.log(email)
     try {
       const user = await getUserUseCase.execute(email)
       res.send({user})
@@ -37,7 +38,6 @@ export default function AuthRouter(
       try {
         const user = await createUserUseCase.execute(req.body)
         const token = createUserToken(user._id)
-        console.log(token)
         res.status(201).json({ 
           status: 201,
           token,
