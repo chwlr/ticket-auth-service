@@ -1,9 +1,10 @@
 import express, { Request, Response } from 'express'
+import bcrypt from 'bcrypt'
 import { CreateUserUseCase } from '../../domain/interface/use-cases/user-create-usecase'
 import { GetUsersUseCase } from '../../domain/interface/use-cases/users-get-usecase'
 import { GetUserUseCase } from '../../domain/interface/use-cases/user-get-usecase'
 import { createUserToken } from '../middlewares/create-user-token'
-import { authorization } from '../middlewares/authorization'
+import { authorization, authentication } from '../middlewares/authorization'
 
 
 export default function UserRouter(
@@ -47,14 +48,21 @@ export default function UserRouter(
           user
         })
       } catch (err) {
-          console.log(err)
-          // res.status(500).send({ message: "Error saving data" })
+          res.status(500).send({ message: "Error saving data" })
       }
     } else {
       res.status(400).send({ message: "Email registered" })
-    }
+    }   
+  })
 
-      
+  router.post('/api/users/signin', async (req: Request, res: Response) => {
+    const { email, password } = req.body
+    if (!(email && password)) {
+      res.status(400).send({ message: "All input is required" })
+    }
+    const user = await getUserUseCase.execute(email)
+    authentication(user, password)
+    
   })
 
   return router
