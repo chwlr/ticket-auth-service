@@ -3,7 +3,7 @@ import { CreateUserUseCase } from '../../domain/interface/use-cases/user-create-
 import { GetUsersUseCase } from '../../domain/interface/use-cases/users-get-usecase'
 import { GetUserUseCase } from '../../domain/interface/use-cases/user-get-usecase'
 import { createUserToken } from '../middlewares/create-user-token'
-import { verifyToken } from '../middlewares/verify-token'
+import { authorization } from '../middlewares/authorization'
 
 
 export default function UserRouter(
@@ -13,7 +13,7 @@ export default function UserRouter(
 ) {
   const router = express.Router()
 
-  router.get('/api/users',async (req: Request, res: Response) => {
+  router.get('/api/users', authorization, async (req: Request, res: Response) => {
     try {
       const users = await getUsersUseCase.execute()
       res.send({users})
@@ -22,7 +22,7 @@ export default function UserRouter(
     }
   })
 
-  router.get('/api/users/?email',async (req: Request, res: Response) => {
+  router.get('/api/users/?email', authorization, async (req: Request, res: Response) => {
     const email = req.params.email
     try {
       const user = await getUserUseCase.execute(email)
@@ -38,12 +38,13 @@ export default function UserRouter(
       try {
         const user = await createUserUseCase.execute(req.body)
         const token = createUserToken(user._id)
-        res.status(201).json({ 
-          status: 201,
-          token,
-          data: {
-            user
-          }
+        res.cookie("access_token", token, {
+          expires: new Date(Date.now() + 90000) ,
+          httpOnly: true
+        })
+        .status(201)
+        .send({
+          user
         })
       } catch (err) {
           console.log(err)
